@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Giỏ Hàng</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
+    
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            text-align: center;
+            margin: 0;
+            padding: 0;
+            background-color: #f4f4f4;
+        }
+        .cart-container {
+            max-width: 600px;
+            margin: 50px auto;
+            background: white;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+        .cart-container img {
+            max-width: 100%;
+            border-radius: 10px;
+        }
+        .cart-container h2 {
+            margin-top: 0;
+        }
+        .checkout-btn {
+            background: #27ae60;
+            color: white;
+            padding: 10px 20px;
+            border: none;
+            cursor: pointer;
+            font-size: 18px;
+            border-radius: 5px;
+            margin-top: 10px;
+        }
+        .checkout-btn:hover {
+            background: #219150;
+        }
+    </style>
+</head>
+<body>
+    <div class="cart-container">
+        <h2>Giỏ Hàng</h2>
+        <div id="cart-content">
+            <!-- Thông tin sản phẩm sẽ được hiển thị ở đây -->
+        </div>
+        <button class="checkout-btn" onclick="checkout()">Thanh Toán</button>
+    </div>
+
+    <script>
+        // Lấy thông tin sản phẩm từ localStorage
+        const productInfo = JSON.parse(localStorage.getItem('selectedProduct'));
+
+        // Hiển thị thông tin sản phẩm
+        const cartContent = document.getElementById('cart-content');
+        if (productInfo) {
+            cartContent.innerHTML = `
+                <img src="${productInfo.image}" alt="${productInfo.name}">
+                <h3>${productInfo.name}</h3>
+                <p>${productInfo.price}</p>
+            `;
+        } else {
+            cartContent.innerHTML = '<p>Không có sản phẩm nào trong giỏ hàng.</p>';
+        }
+
+        // Hàm xử lý thanh toán và chuyển hướng đến Telegram
+        function checkout() {
+            // Xóa thông tin sản phẩm khỏi localStorage
+            localStorage.removeItem('selectedProduct');
+
+            // Tạo thông điệp với thông tin sản phẩm
+            const productName = productInfo ? productInfo.name : 'Sản phẩm';
+            const productPrice = productInfo ? productInfo.price : '0đ';
+            const message = `Tôi muốn mua sản phẩm: ${productName} với giá ${productPrice}. Xin hãy liên hệ với tôi!`;
+
+            // Mã hóa thông điệp để đưa vào URL
+            const encodedMessage = encodeURIComponent(message);
+
+            // Đường link Telegram (thay YOUR_TELEGRAM_USERNAME bằng username Telegram của bạn)
+            const telegramLink = `https://t.me/ohmakasa?text=${encodedMessage}`;
+
+            // Chuyển hướng đến Telegram
+            window.location.href = telegramLink;
+        }
+    </script>
+</body>
+</html>
